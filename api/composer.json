@@ -1,0 +1,6 @@
+{
+    "require": {
+        "vlucas/phpdotenv": "^5.0",
+        "nikic/fast-route": "^1.3"
+    }
+}

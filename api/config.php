@@ -1,4 +1,12 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+// .env の内容は $_EMV で取得できる
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+define('TMP_DIR', __DIR__ . '/tmp');
 define('DB_DIR', __DIR__ . '/db');
 
 // database
