@@ -8,6 +8,8 @@ $dotenv->load();
 
 define('TMP_DIR', __DIR__ . '/tmp');
 define('DB_DIR', __DIR__ . '/db');
+define('LIB_DIR', __DIR__ . '/lib');
+define('ROUTES_DIR', __DIR__ . '/routes');
 
 // database
 define('DB_USER', 'root');
