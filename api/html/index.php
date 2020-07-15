@@ -9,12 +9,12 @@ $handlers = function (FastRoute\RouteCollector $r) {
     echo 'index';
   });
 
-  $r->addRoute('GET', '/users/{id:\d+}/posts', 'MyApp\Routes\Posts::get_all_posts');
+  $r->addRoute('GET', '/users/{id:\d+}/posts[/]', 'MyApp\Routes\Posts::get_all_posts');
 
-  $r->addRoute('POST', '/posts', 'MyApp\Routes\Posts::create_post');
-  $r->addRoute('GET', '/posts/{id:\d+}', 'MyApp\Routes\Posts::get_post');
-  $r->addRoute('PUT', '/posts/{id:\d+}', 'MyApp\Routes\Posts::update_post');
-  $r->addRoute('DELETE', '/posts/{id:\d+}', 'MyApp\Routes\Posts::delete_post');
+  $r->addRoute('POST', '/posts[/]', 'MyApp\Routes\Posts::create_post');
+  $r->addRoute('GET', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::get_post');
+  $r->addRoute('PUT', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::update_post');
+  $r->addRoute('DELETE', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::delete_post');
 };
 
 $dispatcher = FastRoute\cachedDispatcher($handlers, [
