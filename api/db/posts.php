@@ -118,7 +118,7 @@ function get_post_by_id($pid)
     // GET TAGS
     $tags = Tags\get_post_tags(intval($pid));
 
-    return [$post + ['tags' => $tags]];
+    return [...$post, 'tags' => $tags];
   } catch (Exception $e) {
     throw $e;
   }
