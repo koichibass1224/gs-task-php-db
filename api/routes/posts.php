@@ -32,7 +32,7 @@ class Posts
       $res = DB_Posts\get_all_users_posts($userID);
       return_json(['data' => $res]);
     } catch (Exception $e) {
-      self::returnError($e);
+      self::send_error($e);
     }
     return;
   }
@@ -60,7 +60,7 @@ class Posts
       $res = DB_Posts\get_post_by_id($postID);
       return_json(['data' => $res]);
     } catch (Exception $e) {
-      self::returnError($e);
+      self::send_error($e);
     }
     return;
   }
@@ -102,7 +102,7 @@ class Posts
 
       return_json(['data' => $res]);
     } catch (Exception $e) {
-      self::returnError($e);
+      self::send_error($e);
     }
     return;
   }
@@ -147,7 +147,7 @@ class Posts
 
       return_json(['data' => $res]);
     } catch (Exception $e) {
-      self::returnError($e);
+      self::send_error($e);
     }
     return;
   }
@@ -169,7 +169,7 @@ class Posts
       $res = DB_Posts\delete_post($postID);
       return_json(['data' => $res ? $postID : null]);
     } catch (Exception $e) {
-      self::returnError($e);
+      self::send_error($e);
     }
     return;
   }
@@ -223,10 +223,10 @@ class Posts
   }
 
   // return Error
-  private static function returnError($e)
+  private static function send_error($e)
   {
     $status = 400;
     $error = $e->getMessage();
-    return_json(['error' => $error], false, $status);
+    return_json(['message' => $error], false, $status);
   }
 }
