@@ -46,3 +46,26 @@ function create(&$pdo, $pid, $tags = [])
     throw $e;
   }
 }
+
+
+/**
+ * delete relationship records
+ * @param: $pdo(PDO Object)
+ * @param: $pid(INT): post ID
+ */
+function delete(&$pdo, $pid)
+{
+  global $_;
+  try {
+    $sql = "DELETE FROM {$_(DB_TABLE_POST_TAG_RELATION)} WHERE pid = :pid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':pid', $pid, PDO::PARAM_INT);
+    $stmt->execute();
+    // get delete rows
+    $count = $stmt->rowCount();
+
+    return $count;
+  } catch (PDOException $e) {
+    throw $e;
+  }
+}
