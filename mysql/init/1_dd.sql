@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS todo.tags (
 );
 
 CREATE TABLE IF NOT EXISTS todo.post_tag_relationships (
-  `id` BIGINT(20) AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  `pid` INT NOT NULL,
-  `tid` INT NOT NULL,
-  `created_at` datetime DEFAULT current_timestamp
+  `pid` BIGINT(20) NOT NULL,
+  `tid` BIGINT(20) NOT NULL,
+  FOREIGN KEY posts_id_key (`pid`) REFERENCES todo.posts (`id`) ON DELETE CASCADE,
+  FOREIGN KEY tags_id_key (`tid`) REFERENCES todo.tags (`id`) ON DELETE CASCADE
 );
