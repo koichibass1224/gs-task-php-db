@@ -5,9 +5,11 @@ namespace MyApp\DataBase\Posts;
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/connect.php';
 require_once __DIR__ . '/tags.php';
+require_once __DIR__ . '/post_tag_relationship.php';
 
 use MyApp\DB;
 use MyApp\DataBase\Tags;
+use MyApp\DataBase\Relationships;
 use \PDO;
 use \Exception;
 use \PDOException;
@@ -150,21 +152,7 @@ function create_post(array $payload)
     $pid = $pdo->lastInsertId('id');
 
     // Create Relationship
-    $tagIds = [];
-    $placeholder = [];
-    foreach ($tagsList as $key => $tag) {
-      $placeholder[] = "(:pid, :tid{$key})";
-      $tagIds[] = $key;
-    }
-
-    $sql = "INSERT INTO {$_(DB_TABLE_POST_TAG_RELATION)} (pid, tid) VALUES " . implode($placeholder, ',');
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(":pid", $pid, PDO::PARAM_INT);
-    foreach ($tagIds as $tid) {
-      $stmt->bindValue(":tid{$tid}", $tid, PDO::PARAM_INT);
-    }
-    $stmt->execute();
+    Relationships\create($pdo, $pid, $tagsList);
 
     $pdo->commit();
 
