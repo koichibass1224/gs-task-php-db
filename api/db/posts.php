@@ -13,6 +13,38 @@ use \Exception;
 use \PDOException;
 
 /**
+ * GET POST with its TAGS by POST ID
+ * @param $pid: Int Post ID
+ */
+function get_post_by_id($pid) {
+  global $_;
+  try {
+    $pdo = DB::connect();
+    // GET POST
+    $sql = "SELECT * FROM {$_(DB_TABLE_POSTS)} WHERE id = :pid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":pid", $pid, PDO::PARAM_INT);
+    $stmt->execute();
+    $post = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // no data
+    if (!$post) {
+      return [];
+    }
+
+    $pid = $post['id'];
+
+    // GET TAGS
+    $tags = Tags\get_post_tags(intval($pid));
+
+    return [$post + ['tags' => $tags]];
+
+  } catch (Exception $e) {
+    throw $e;
+  }
+}
+
+/**
  * CREATE NEW POST and RELATIONSHIPS
  * @param $payload: Object
  */
