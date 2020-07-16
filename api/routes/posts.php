@@ -81,6 +81,9 @@ class Posts
   {
     try {
       // TODO: get user id via JWT
+      // Mock user id
+      $userID = 1;
+
       // params
       list('title' => $title, 'tags' => $tags) = self::get_params();
 
@@ -92,9 +95,9 @@ class Posts
       }
 
       $res = DB_Posts\create_post([
-        'uid'   => 1, //$userID,
-        'title' => 'FOO', //$title,
-        'tags'  => ['tag-1', 'tag-2', 'tag-4'], //$tags, //Array
+        'uid'   => $userID,
+        'title' => $title,
+        'tags'  => $tags,
       ]);
 
       return_json(['data' => $res]);
@@ -123,6 +126,9 @@ class Posts
         throw new Exception('ERROR: API UPDATE POST - POST ID UNDEFINDED');
       }
       // TODO: get user id via JWT
+      // Mock user id
+      $userID = 1;
+
       // params
       list('title' => $title, 'tags' => $tags) = self::get_params();
 
@@ -134,10 +140,9 @@ class Posts
       }
 
       $res = DB_Posts\update_post($postID, [
-        'uid'   => 1, //$userID,
-        'title' => '1234567', //$title,
-        // Array
-        'tags'  => ['tag-3', 'tag-4', 'tag-7'], //$tags,
+        'uid'   => $userID,
+        'title' => $title,
+        'tags'  => $tags,
       ]);
 
       return_json(['data' => $res]);
