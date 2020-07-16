@@ -81,6 +81,8 @@ class Posts
   {
     try {
       // TODO: get user id via JWT
+      // params
+      list('title' => $title, 'tags' => $tags) = self::get_params();
 
       // TODO: varidation payload data
       $res = DB_Posts\create_post([
@@ -115,6 +117,9 @@ class Posts
         throw new Exception('ERROR: API UPDATE POST - POST ID UNDEFINDED');
       }
       // TODO: get user id via JWT
+      // params
+      list('title' => $title, 'tags' => $tags) = self::get_params();
+
 
       // TODO: varidation payload data
       $res = DB_Posts\update_post($postID, [
@@ -157,7 +162,18 @@ class Posts
   private static function get_params()
   {
     $json = file_get_contents("php://input");
-    return json_decode($json, true);
+    $params =  json_decode($json, true);
+    $title = trim($params['title']);
+    $tags = $params['tags'] ? $params['tags'] : [];
+
+    $tags = array_map(function ($tag) {
+      return strip_tags(trim($tag));
+    }, $tags);
+
+    return [
+      'title' => $title,
+      'tags' => $tags,
+    ];
   }
 
   // return Error
