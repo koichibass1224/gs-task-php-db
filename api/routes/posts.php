@@ -96,12 +96,38 @@ class Posts
     return;
   }
 
-
+  /**
+   *  @return data => [{
+   *    id: post id,
+   *    uid: user id,
+   *    title: post title,
+   *    status: post status,
+   *    created_at,
+   *    updated_at,
+   *    tags: [{id: tag id, name: tag: tag name}, ...]
+   *  }]
+   */
   public static function update_post($vars)
   {
-    var_dump($vars);
     $postID = $vars['id'];
-    // TODO: update post by $postID;
+    try {
+      if (empty($postID)) {
+        throw new Exception('ERROR: API UPDATE POST - POST ID UNDEFINDED');
+      }
+      // TODO: get user id via JWT
+
+      // TODO: varidation payload data
+      $res = DB_Posts\update_post($postID, [
+        'uid'   => 1, //$userID,
+        'title' => '1234567', //$title,
+        // Array
+        'tags'  => ['tag-3', 'tag-4', 'tag-7'], //$tags,
+      ]);
+
+      return_json(['data' => $res]);
+    } catch (Exception $e) {
+      self::returnError($e);
+    }
     return;
   }
 

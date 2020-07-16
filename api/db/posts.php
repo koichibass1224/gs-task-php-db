@@ -170,9 +170,48 @@ function create_post(array $payload)
  */
 function update_post($pid, $payload)
 {
-  try {
-    // TODO: check tags & create new tag
+  global $_;
 
+  list('uid' => $uid, 'title' => $title, 'tags' => $tags) = $payload;
+  try {
+    // create tags
+    $tagsList = Tags\create_tags($tags);
+
+    $pdo = DB::connect();
+    $pdo->beginTransaction();
+
+    // check has record
+    $sql = "SELECT count(id) FROM {$_(DB_TABLE_POSTS)} WHERE id = :pid AND uid = :uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':uid', $uid, PDO::PARAM_INT);
+    $stmt->bindValue(':pid', $pid, PDO::PARAM_INT);
+    $stmt->execute();
+    $count = intval($stmt->fetchColumn());
+    // no record to update
+    if (!$count) {
+      throw new Exception('ERROR: Access denied');
+    }
+
+    $sql = "UPDATE {$_(DB_TABLE_POSTS)}
+      SET title = :title
+      WHERE id = :pid AND uid = :uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':uid', $uid, PDO::PARAM_INT);
+    $stmt->bindValue(':pid', $pid, PDO::PARAM_INT);
+    $stmt->bindValue(':title', $title, PDO::PARAM_STR);
+    $stmt->execute();
+    // update rows count
+    $count = $stmt->rowCount();
+
+    // Delete old relationship records
+    Relationships\delete($pdo, $pid);
+
+    // Create new relationship records
+    Relationships\create($pdo, $pid, $tagsList);
+
+    $pdo->commit();
+
+    return get_post_by_id($pid);
   } catch (Exception $e) {
     throw $e;
   }
