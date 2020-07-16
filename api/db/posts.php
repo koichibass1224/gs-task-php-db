@@ -3,6 +3,7 @@
 namespace MyApp\DataBase\Posts;
 
 require_once __DIR__ . '/../config.php';
+require_once LIB_DIR . '/helpers.php';
 require_once __DIR__ . '/connect.php';
 require_once __DIR__ . '/tags.php';
 require_once __DIR__ . '/post_tag_relationship.php';
@@ -25,9 +26,13 @@ function format_post_tag_data($data = [])
     $postID = $post['id'];
     $tagID = $post['tag_id'];
     $tagName = $post['tag_name'];
-    unset($post['tag_id']);
-    unset($post['tag_name']);
+
     if (empty($formatData[$postID])) {
+      $post['title'] = h($post['title']);
+
+      unset($post['tag_id']);
+      unset($post['tag_name']);
+
       $formatData[$postID] = $post + ['tags' => []];
     }
     $formatData[$postID]['tags'][] = [
@@ -114,6 +119,7 @@ function get_post_by_id($pid)
     }
 
     $pid = $post['id'];
+    $post['title'] = h($post['title']);
 
     // GET TAGS
     $tags = Tags\get_post_tags(intval($pid));
