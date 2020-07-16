@@ -13,6 +13,81 @@ use \Exception;
 use \PDOException;
 
 /**
+ * @param $data(Array): [[id: post id, ... tag_id: tag id, tag_name: tag name], ...]
+ * @return Array: [[id: post id, ... tags: [[id: tag id, name: tag name], ...]], ...];
+ */
+function format_post_tag_data($data = []) {
+  $formatData = [];
+  foreach($data as $post) {
+    $postID = $post['id'];
+    $tagID = $post['tag_id'];
+    $tagName = $post['tag_name'];
+    unset($post['tag_id']);
+    unset($post['tag_name']);
+    if ( empty($formatData[$postID]) ) {
+      $formatData[$postID] = $post + ['tags' => []];
+    }
+    $formatData[$postID]['tags'][] = [
+      'id'   => $tagID,
+      'name' => $tagName,
+    ];
+  }
+  // [postID: [data], ...] => [[data], [data], ...]
+  return array_values($formatData);
+}
+
+/**
+ * GET ALL USERS POST
+ * @param $uid: INT User ID
+ */
+function get_all_users_posts($uid) {
+  global $_;
+  try {
+    $pdo = DB::connect();
+    // GET USER
+    $sql = "SELECT * FROM {$_(DB_TABLE_USERS)} WHERE id = :uid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":uid", $uid, PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // un exists user error
+    if (!$user) {
+      throw new Exception('ERROR: Access denied');
+    }
+
+    // get post with tags
+    try {
+      $sql = "SELECT
+        pt.*, tt.id as tag_id, tt.name as tag_name
+      FROM {$_(DB_TABLE_USERS)} as ut
+      INNER JOIN (
+        SELECT * FROM {$_(DB_TABLE_POSTS)}
+        WHERE uid = :uid
+        ) as pt
+        ON ut.id = pt.uid
+      INNER JOIN {$_(DB_TABLE_POST_TAG_RELATION)} as rt
+        ON pt.id = rt.pid
+      INNER JOIN {$_(DB_TABLE_TAGS)} as tt
+        ON tt.id = rt.tid";
+
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindValue(":uid", $uid, PDO::PARAM_INT);
+      $stmt->execute();
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      return format_post_tag_data($res);
+
+    } catch(PDOException $e) {
+      throw new Exception('ERROR: DB GET POSTS ALL - ' . $e->getMessage());
+    }
+    return;
+  } catch(Exception $e) {
+    throw $e;
+  }
+}
+
+/**
  * GET POST with its TAGS by POST ID
  * @param $pid: Int Post ID
  */

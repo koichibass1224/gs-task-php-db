@@ -10,11 +10,30 @@ use \Exception;
 
 class Posts
 {
-  static function get_all_posts($vars)
+  /**
+   *  @return data => [{
+   *    id: post id,
+   *    uid: user id,
+   *    title: post title,
+   *    status: post status,
+   *    created_at,
+   *    updated_at,
+   *    tags: [{id: tag id, name: tag: tag name}, ...]
+   *  }, ...]
+   */
+  public static function get_all_posts($vars)
   {
     $userID = $vars['id'];
-    var_dump($userID);
-    // TODO: get all post by $userID;
+    try {
+      if (empty($userID)) {
+        throw new Exception('ERROR: DB GET POSTS ALL - USER ID UNDEFIMNED');
+      }
+
+      $res = DB_Posts\get_all_users_posts($userID);
+      return_json(['data' => $res]);
+    } catch (Exception $e) {
+      self::returnError($e);
+    }
     return;
   }
 
