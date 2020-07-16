@@ -102,11 +102,24 @@ class Posts
     return;
   }
 
+  /**
+   *  @return data => deleted post id;
+   */
   public static function delete_post($vars)
   {
-    var_dump($vars);
     $postID = $vars['id'];
-    // TODO: delete post by $postID;
+    try {
+      if (empty($postID)) {
+        throw new Exception('ERROR: API DELETE POST - POST ID UNDEFINDED');
+      }
+
+      // TODO: get user id via JWT
+
+      $res = DB_Posts\delete_post($postID);
+      return_json(['data' => $res ? $postID : null]);
+    } catch (Exception $e) {
+      self::returnError($e);
+    }
     return;
   }
 

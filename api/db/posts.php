@@ -186,11 +186,24 @@ function update_post($pid, $payload) {
 /**
  * DELETE POST with its RELATIONSHIPS
  * @param $pid: Int Post ID
+ * @return Int deleted records count
  */
-function delete_post($pid) {
+function delete_post($pid)
+{
+  global $_;
   try {
     $pdo = DB::connect();
-    $sql = "DELETE FROM {$_(DB_TABLE_POSTS)} as pt OUTER JOIN {$_(DB_TABLE_TAGS)} as tr ON  pt.id = tr.pid";
+    $sql = "DELETE FROM {$_(DB_TABLE_POSTS)} WHERE id = :pid";
+    $stmt = $pdo->prepare($sql);
+
+    $pdo->beginTransaction();
+    $stmt->bindValue(':pid', $pid, PDO::PARAM_INT);
+    $stmt->execute();
+    // delete colimn count
+    $count = $stmt->rowCount();
+    $pdo->commit();
+
+    return $count;
   } catch (Exception $e) {
     throw $e;
   }
