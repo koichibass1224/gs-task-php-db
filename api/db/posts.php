@@ -136,7 +136,7 @@ function create_post(array $payload)
   list('uid' => $uid, 'title' => $title, 'tags' => $tags) = $payload;
   try {
     // create tags
-    $tagsList = Tags\create_tags($tags);
+    $tagsList = Tags\create($tags);
 
     // create new post
     $pdo = DB::connect();
@@ -175,7 +175,7 @@ function update_post($pid, $payload)
   list('uid' => $uid, 'title' => $title, 'tags' => $tags) = $payload;
   try {
     // create tags
-    $tagsList = Tags\create_tags($tags);
+    $tagsList = Tags\create($tags);
 
     $pdo = DB::connect();
     $pdo->beginTransaction();

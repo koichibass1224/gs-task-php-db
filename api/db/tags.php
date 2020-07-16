@@ -7,7 +7,6 @@ require_once __DIR__ . '/connect.php';
 
 use MyApp\DB;
 use \PDO;
-use \Exception;
 use \PDOException;
 
 /**
@@ -94,7 +93,7 @@ function get_tags_by_names(array $tags = [], $toObject = false)
  * @param $tags(Array) ['tag_name', ...]
  * @return Array: [tag_id => [id => tag_id, name => tag_name], ...]
  */
-function create_tags(array $tags = [])
+function create(array $tags = [])
 {
   global $_;
 
