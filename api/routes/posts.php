@@ -153,6 +153,12 @@ class Posts
     return;
   }
 
+  // get json params
+  private static function get_params()
+  {
+    $json = file_get_contents("php://input");
+    return json_decode($json, true);
+  }
 
   // return Error
   private static function returnError($e)
