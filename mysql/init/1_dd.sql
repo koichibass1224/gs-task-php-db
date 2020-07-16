@@ -33,3 +33,5 @@ CREATE TABLE IF NOT EXISTS todo.post_tag_relationships (
   FOREIGN KEY posts_id_key (`pid`) REFERENCES todo.posts (`id`) ON DELETE CASCADE,
   FOREIGN KEY tags_id_key (`tid`) REFERENCES todo.tags (`id`) ON DELETE CASCADE
 );
+
+INSERT INTO todo.users (id, name, email, password) VALUES (null, "John Smith", "example@example.com", "password");
