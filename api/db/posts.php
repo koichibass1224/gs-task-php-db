@@ -71,14 +71,14 @@ function create_post(Array $payload) {
 
     // Create Relationship
     $tagIds = [];
-    $tags = [];
     $placeholder = [];
     foreach($tagsList as $key => $tag) {
       $placeholder[] = "(:pid, :tid{$key})";
       $tagIds[] = $key;
-      $tags[] = $tag;
     }
+
     $sql = "INSERT INTO {$_(DB_TABLE_POST_TAG_RELATION)} (pid, tid) VALUES " . implode($placeholder, ',');
+
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":pid", $pid, PDO::PARAM_INT);
     foreach($tagIds as $tid) {
@@ -88,13 +88,35 @@ function create_post(Array $payload) {
 
     $pdo->commit();
 
-    return [
-      'id'    => $pid,
-      'title' => $title,
-      'tags'  => $tags,
-    ];
+    return get_post_by_id($pid);
   } catch (Exception $e) {
     throw $e;
   }
 }
 
+/**
+ * UPDATE POST remove OLD RELATIONSHIPS and CREATE NEW RERATIONSHIP
+ * @param $pid: Int Post ID
+ * @param $payload: Object
+ */
+function update_post($pid, $payload) {
+  try {
+    // TODO: check tags & create new tag
+
+  } catch (Exception $e) {
+    throw $e;
+  }
+}
+
+/**
+ * DELETE POST with its RELATIONSHIPS
+ * @param $pid: Int Post ID
+ */
+function delete_post($pid) {
+  try {
+    $pdo = DB::connect();
+    $sql = "DELETE FROM {$_(DB_TABLE_POSTS)} as pt OUTER JOIN {$_(DB_TABLE_TAGS)} as tr ON  pt.id = tr.pid";
+  } catch (Exception $e) {
+    throw $e;
+  }
+}

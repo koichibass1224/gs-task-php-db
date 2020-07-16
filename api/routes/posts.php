@@ -45,6 +45,17 @@ class Posts
     return;
   }
 
+  /**
+   *  @return data => [{
+   *    id: post id,
+   *    uid: user id,
+   *    title: post title,
+   *    status: post status,
+   *    created_at,
+   *    updated_at,
+   *    tags: [{id: tag id, name: tag: tag name}, ...]
+   *  }]
+   */
   public static function create_post($vars)
   {
     try {
