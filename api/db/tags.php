@@ -11,6 +11,43 @@ use \Exception;
 use \PDOException;
 
 /**
+ * GET POST TAGS
+ * @param $pid(INT) post id
+ * @param $toObject(Boolean) default false
+ * @return Array:
+ *   $toObject true => [tag_id => [id => tag_id, name => tag_name], ...]
+ *   $toObject false => [[id => tag_id, name => tag_name], ...]
+ */
+function get_post_tags(INT $pid, $toObject = false) {
+  global $_;
+  try {
+    $pdo = DB::connect();
+    $sql = "SELECT tt.id, tt.name
+      FROM {$_(DB_TABLE_POSTS)} as tp
+      INNER JOIN {$_(DB_TABLE_POST_TAG_RELATION)} as rt
+        ON tp.id = rt.pid
+      INNER JOIN {$_(DB_TABLE_TAGS)} as tt
+        ON tt.id = rt.tid
+      WHERE tp.id = :pid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":pid", $pid, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // exists tags list
+    if ($toObject) {
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_UNIQUE);
+    } else {
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    return $res;
+
+  } catch (PDOException $e) {
+    throw new PDOException('ERROR: GET POST TAGS - '. $e->getMessage());
+  }
+}
+
+/**
  * GET TAGS DATA BY TAGS NAME
  * @param $tags(Array) ['tag_name', ...]
  * @param $toObject(Boolean) default false
