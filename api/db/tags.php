@@ -50,3 +50,60 @@ function get_tags_by_names(Array $tags = [], $toObject = false) {
   }
 }
 
+
+/**
+ * CREATE TAGS
+ * @param $tags(Array) ['tag_name', ...]
+ * @return Array: [tag_id => [id => tag_id, name => tag_name], ...]
+ */
+function create_tags(Array $tags = []) {
+  global $_;
+
+  // no tags
+  if (!count($tags)) {
+    return [];
+  };
+
+  try {
+    $pdo = DB::connect();
+    // Check tag exists
+    $existsTags = get_tags_by_names($tags, true);
+
+    $existsTagNames = [];
+    foreach($existsTags as $tagData) {
+      $existsTagNames[] = $tagData['name'];
+    }
+
+    // 追加するタグリストを作成
+    $addTags = array_diff($tags, $existsTagNames);
+
+    if (count($addTags) === 0) {
+      return $existsTags;
+    }
+
+    // Add new Tags;
+    $placeholder = [];
+    foreach($addTags as $key => $tag) {
+      $placeholder[] = "(null, :name{$key})";
+    }
+    $sql = "INSERT INTO
+      {$_(DB_TABLE_TAGS)} (id, name)
+      VALUES " . implode($placeholder, ',');
+
+    $stmt = $pdo->prepare($sql);
+
+    $pdo->beginTransaction();
+    foreach($addTags as $key => $tag) {
+      $stmt->bindValue(":name{$key}", $tag, PDO::PARAM_STR);
+    }
+    $stmt->execute();
+    $pdo->commit();
+
+    // get tags data;
+    $res = get_tags_by_names($tags, true);
+    return $res;
+
+  } catch (PDOException $e) {
+    throw new PDOException('ERROR: CREATE TAGS - '. $e->getMessage());
+  }
+}
