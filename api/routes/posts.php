@@ -84,7 +84,13 @@ class Posts
       // params
       list('title' => $title, 'tags' => $tags) = self::get_params();
 
-      // TODO: varidation payload data
+      // validation payload data
+      $errors = self::validate_post_data($title, $tags);
+      if (!empty($errors)) {
+        self::send_validation_error($errors);
+        return;
+      }
+
       $res = DB_Posts\create_post([
         'uid'   => 1, //$userID,
         'title' => 'FOO', //$title,
@@ -120,8 +126,13 @@ class Posts
       // params
       list('title' => $title, 'tags' => $tags) = self::get_params();
 
+      // validation payload data
+      $errors = self::validate_post_data($title, $tags);
+      if (!empty($errors)) {
+        self::send_validation_error($errors);
+        return;
+      }
 
-      // TODO: varidation payload data
       $res = DB_Posts\update_post($postID, [
         'uid'   => 1, //$userID,
         'title' => '1234567', //$title,
@@ -158,6 +169,27 @@ class Posts
     return;
   }
 
+  /**
+   * Validation Post data
+   */
+  private static function validate_post_data($title, $tags)
+  {
+    $errors = [];
+
+    if (empty($title)) {
+      $errors['title'] = 'Title is required.';
+    }
+
+    foreach ($tags as $tag) {
+      if (!preg_match('/^([\w\-]+)$/', $tag)) {
+        $errors['tags'] = 'Contains bad characters. Tag can have alphabet, `-` and `_`.';
+        break;
+      }
+    }
+
+    return $errors;
+  }
+
   // get json params
   private static function get_params()
   {
@@ -174,6 +206,15 @@ class Posts
       'title' => $title,
       'tags' => $tags,
     ];
+  }
+
+  // Send validation error.
+  private static function send_validation_error($errors)
+  {
+    return_json([
+      'message' => 'validation error',
+      'errors' => $errors,
+    ], false, 400);
   }
 
   // return Error
