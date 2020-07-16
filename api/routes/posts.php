@@ -37,6 +37,7 @@ class Posts
     return;
   }
 
+
   /**
    *  @return data => [{
    *    id: post id,
@@ -63,6 +64,7 @@ class Posts
     }
     return;
   }
+
 
   /**
    *  @return data => [{
@@ -94,6 +96,7 @@ class Posts
     return;
   }
 
+
   public static function update_post($vars)
   {
     var_dump($vars);
@@ -101,6 +104,7 @@ class Posts
     // TODO: update post by $postID;
     return;
   }
+
 
   /**
    *  @return data => deleted post id;
@@ -123,8 +127,10 @@ class Posts
     return;
   }
 
+
   // return Error
-  private static function returnError($e) {
+  private static function returnError($e)
+  {
     $status = 400;
     $error = $e->getMessage();
     return_json(['error' => $error], false, $status);

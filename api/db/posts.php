@@ -16,15 +16,16 @@ use \PDOException;
  * @param $data(Array): [[id: post id, ... tag_id: tag id, tag_name: tag name], ...]
  * @return Array: [[id: post id, ... tags: [[id: tag id, name: tag name], ...]], ...];
  */
-function format_post_tag_data($data = []) {
+function format_post_tag_data($data = [])
+{
   $formatData = [];
-  foreach($data as $post) {
+  foreach ($data as $post) {
     $postID = $post['id'];
     $tagID = $post['tag_id'];
     $tagName = $post['tag_name'];
     unset($post['tag_id']);
     unset($post['tag_name']);
-    if ( empty($formatData[$postID]) ) {
+    if (empty($formatData[$postID])) {
       $formatData[$postID] = $post + ['tags' => []];
     }
     $formatData[$postID]['tags'][] = [
@@ -36,11 +37,13 @@ function format_post_tag_data($data = []) {
   return array_values($formatData);
 }
 
+
 /**
  * GET ALL USERS POST
  * @param $uid: INT User ID
  */
-function get_all_users_posts($uid) {
+function get_all_users_posts($uid)
+{
   global $_;
   try {
     $pdo = DB::connect();
@@ -77,21 +80,22 @@ function get_all_users_posts($uid) {
       $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       return format_post_tag_data($res);
-
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
       throw new Exception('ERROR: DB GET POSTS ALL - ' . $e->getMessage());
     }
     return;
-  } catch(Exception $e) {
+  } catch (Exception $e) {
     throw $e;
   }
 }
+
 
 /**
  * GET POST with its TAGS by POST ID
  * @param $pid: Int Post ID
  */
-function get_post_by_id($pid) {
+function get_post_by_id($pid)
+{
   global $_;
   try {
     $pdo = DB::connect();
@@ -113,17 +117,18 @@ function get_post_by_id($pid) {
     $tags = Tags\get_post_tags(intval($pid));
 
     return [$post + ['tags' => $tags]];
-
   } catch (Exception $e) {
     throw $e;
   }
 }
 
+
 /**
  * CREATE NEW POST and RELATIONSHIPS
  * @param $payload: Object
  */
-function create_post(Array $payload) {
+function create_post(array $payload)
+{
   global $_;
 
   list('uid' => $uid, 'title' => $title, 'tags' => $tags) = $payload;
@@ -147,7 +152,7 @@ function create_post(Array $payload) {
     // Create Relationship
     $tagIds = [];
     $placeholder = [];
-    foreach($tagsList as $key => $tag) {
+    foreach ($tagsList as $key => $tag) {
       $placeholder[] = "(:pid, :tid{$key})";
       $tagIds[] = $key;
     }
@@ -156,7 +161,7 @@ function create_post(Array $payload) {
 
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":pid", $pid, PDO::PARAM_INT);
-    foreach($tagIds as $tid) {
+    foreach ($tagIds as $tid) {
       $stmt->bindValue(":tid{$tid}", $tid, PDO::PARAM_INT);
     }
     $stmt->execute();
@@ -169,12 +174,14 @@ function create_post(Array $payload) {
   }
 }
 
+
 /**
  * UPDATE POST remove OLD RELATIONSHIPS and CREATE NEW RERATIONSHIP
  * @param $pid: Int Post ID
  * @param $payload: Object
  */
-function update_post($pid, $payload) {
+function update_post($pid, $payload)
+{
   try {
     // TODO: check tags & create new tag
 
@@ -182,6 +189,7 @@ function update_post($pid, $payload) {
     throw $e;
   }
 }
+
 
 /**
  * DELETE POST with its RELATIONSHIPS

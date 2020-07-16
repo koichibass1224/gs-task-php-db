@@ -18,7 +18,8 @@ use \PDOException;
  *   $toObject true => [tag_id => [id => tag_id, name => tag_name], ...]
  *   $toObject false => [[id => tag_id, name => tag_name], ...]
  */
-function get_post_tags(INT $pid, $toObject = false) {
+function get_post_tags(INT $pid, $toObject = false)
+{
   global $_;
   try {
     $pdo = DB::connect();
@@ -35,17 +36,17 @@ function get_post_tags(INT $pid, $toObject = false) {
 
     // exists tags list
     if ($toObject) {
-      $res = $stmt->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_UNIQUE);
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
     } else {
       $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     return $res;
-
   } catch (PDOException $e) {
-    throw new PDOException('ERROR: GET POST TAGS - '. $e->getMessage());
+    throw new PDOException('ERROR: GET POST TAGS - ' . $e->getMessage());
   }
 }
+
 
 /**
  * GET TAGS DATA BY TAGS NAME
@@ -56,7 +57,8 @@ function get_post_tags(INT $pid, $toObject = false) {
  *   $toObject true => [tag_id => [id => tag_id, name => tag_name], ...]
  *   $toObject false => [[id => tag_id, name => tag_name], ...]
  */
-function get_tags_by_names(Array $tags = [], $toObject = false) {
+function get_tags_by_names(array $tags = [], $toObject = false)
+{
   global $_;
 
   // no tags
@@ -75,15 +77,14 @@ function get_tags_by_names(Array $tags = [], $toObject = false) {
 
     // exists tags list
     if ($toObject) {
-      $res = $stmt->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_UNIQUE);
+      $res = $stmt->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
     } else {
       $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     return $res;
-
   } catch (PDOException $e) {
-    throw new PDOException('ERROR: GET TAGS BY TAG NAME - '. $e->getMessage());
+    throw new PDOException('ERROR: GET TAGS BY TAG NAME - ' . $e->getMessage());
   }
 }
 
@@ -93,7 +94,8 @@ function get_tags_by_names(Array $tags = [], $toObject = false) {
  * @param $tags(Array) ['tag_name', ...]
  * @return Array: [tag_id => [id => tag_id, name => tag_name], ...]
  */
-function create_tags(Array $tags = []) {
+function create_tags(array $tags = [])
+{
   global $_;
 
   // no tags
@@ -107,7 +109,7 @@ function create_tags(Array $tags = []) {
     $existsTags = get_tags_by_names($tags, true);
 
     $existsTagNames = [];
-    foreach($existsTags as $tagData) {
+    foreach ($existsTags as $tagData) {
       $existsTagNames[] = $tagData['name'];
     }
 
@@ -120,7 +122,7 @@ function create_tags(Array $tags = []) {
 
     // Add new Tags;
     $placeholder = [];
-    foreach($addTags as $key => $tag) {
+    foreach ($addTags as $key => $tag) {
       $placeholder[] = "(null, :name{$key})";
     }
     $sql = "INSERT INTO
@@ -130,7 +132,7 @@ function create_tags(Array $tags = []) {
     $stmt = $pdo->prepare($sql);
 
     $pdo->beginTransaction();
-    foreach($addTags as $key => $tag) {
+    foreach ($addTags as $key => $tag) {
       $stmt->bindValue(":name{$key}", $tag, PDO::PARAM_STR);
     }
     $stmt->execute();
@@ -139,8 +141,7 @@ function create_tags(Array $tags = []) {
     // get tags data;
     $res = get_tags_by_names($tags, true);
     return $res;
-
   } catch (PDOException $e) {
-    throw new PDOException('ERROR: CREATE TAGS - '. $e->getMessage());
+    throw new PDOException('ERROR: CREATE TAGS - ' . $e->getMessage());
   }
 }
