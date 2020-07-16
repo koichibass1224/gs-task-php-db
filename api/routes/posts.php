@@ -26,7 +26,7 @@ class Posts
     $userID = $vars['id'];
     try {
       if (empty($userID)) {
-        throw new Exception('ERROR: DB GET POSTS ALL - USER ID UNDEFIMNED');
+        throw new Exception('ERROR: API GET POSTS ALL - USER ID UNDEFIMNED');
       }
 
       $res = DB_Posts\get_all_users_posts($userID);
@@ -53,7 +53,7 @@ class Posts
     $postID = $vars['id'];
     try {
       if (empty($postID)) {
-        throw new Exception('ERROR: DB GET POST - POST ID UNDEFINDED');
+        throw new Exception('ERROR: API GET POST - POST ID UNDEFINDED');
       }
 
       $res = DB_Posts\get_post_by_id($postID);
