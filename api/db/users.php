@@ -113,3 +113,31 @@ function get_user_by_email($email)
     throw $e;
   }
 }
+
+
+/**
+ * username からユーザーを取得する
+ * @return [ user data ]
+ */
+function get_user_by_name($username)
+{
+  global $_;
+  try {
+    $pdo = DB::connect();
+    $sql = "SELECT * FROM {$_(DB_TABLE_USERS)} WHERE name = :username";
+    $stmt = $pdo->prepare($sql);
+    $pdo->beginTransaction();
+    try {
+      $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+      $stmt->execute();
+      $data = $stmt->fetch(PDO::FETCH_ASSOC);
+      $pdo->commit();
+
+      return $data;
+    } catch (PDOException $e) {
+      throw new Exception('GET USER BY EMAIL ERROR: ' . $e->getMessage());
+    }
+  } catch (Exception $e) {
+    throw $e;
+  }
+}

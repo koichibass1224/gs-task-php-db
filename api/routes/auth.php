@@ -103,6 +103,16 @@ class Auth
       $errors['username'] = 'Please enter user name.';
     } else if (!preg_match('/^([\w\-]+)$/', $username)) {
       $errors['username'] = 'User name can include alphabets, `-` and `_`.';
+    } else {
+      // check user name already used.
+      try {
+        $userData = DB_Users\get_user_by_name($username);
+        if (!empty($userData)) {
+          $errors['username'] = 'Thie Username is already registered.';
+        }
+      } catch (Exception $e) {
+        $errors['error'] = $e->getMessage();
+      }
     }
 
     if (empty($password)) {
