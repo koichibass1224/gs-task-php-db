@@ -7,11 +7,53 @@ require_once DB_DIR . '/users.php';
 require_once LIB_DIR . '/auth.php';
 
 use MyApp\DataBase\Users as DB_Users;
-use MyApp\Auth as JWT;
+use MyApp\Auth as LIB_Auth;
 use \Exception;
 
 class Auth
 {
+  /**
+   * Login handler
+   */
+  public static function login()
+  {
+    $email = trim(filter_input(INPUT_POST, 'email'));
+    $password = trim(filter_input(INPUT_POST, 'password'));
+
+    try {
+      $userData = DB_Users\get_user_by_email($email);
+
+      if (empty($userData) || !LIB_Auth\verify_password($password, $userData['password'])) {
+        self::send_validation_error(
+          'E-mail or password is different.',
+          [
+            'email' => $email,
+            'password' => $password,
+          ]
+        );
+        exit();
+      }
+
+      $data = [
+        'id' => $userData['id'],
+        'username' => $userData['name'],
+      ];
+
+      // create JWT token
+      $token = LIB_Auth\create_jwt_token([
+        'id' => $data['id'],
+      ]);
+
+      return_json([
+        'data'  => $data,
+        'token' => $token,
+      ]);
+    } catch (Exception $e) {
+      self::send_error($e);
+    }
+  }
+
+
   /**
    * Sign up handler
    */
@@ -29,13 +71,14 @@ class Auth
         'email'    => $email,
         'password' => $password,
       ]);
+      exit();
     }
 
     try {
       $data = DB_Users\create_user($username, $email, $password);
 
       // create JWT token
-      $token = JWT\create_jwt_token([
+      $token = LIB_Auth\create_jwt_token([
         'id' => $data['id'],
       ]);
 
