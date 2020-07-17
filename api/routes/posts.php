@@ -214,18 +214,19 @@ class Posts
   }
 
   // Send validation error.
-  private static function send_validation_error($errors)
+  private static function send_validation_error($errors, $data = null)
   {
     return_json([
       'message' => 'validation error',
       'errors' => $errors,
-    ], false, 400);
+      'data' => $data,
+    ], false, 200);
   }
 
   // return Error
   private static function send_error($e)
   {
-    $status = 400;
+    $status = 500;
     $error = $e->getMessage();
     return_json(['message' => $error], false, $status);
   }
