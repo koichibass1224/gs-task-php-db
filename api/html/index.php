@@ -15,6 +15,9 @@ $handlers = function (FastRoute\RouteCollector $r) {
   $r->addRoute('GET', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::get_post');
   $r->addRoute('PUT', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::update_post');
   $r->addRoute('DELETE', '/posts/{id:\d+}[/]', 'MyApp\Routes\Posts::delete_post');
+
+  $r->addRoute('POST', '/login', 'MyApp\Routes\Auth::login');
+  $r->addRoute('POST', '/signup', 'MyApp\Routes\Auth::signup');
 };
 
 $dispatcher = FastRoute\cachedDispatcher($handlers, [
