@@ -220,7 +220,7 @@ class Posts
       'message' => 'validation error',
       'errors' => $errors,
       'data' => $data,
-    ], false, 200);
+    ], false, 400);
   }
 
   // return Error
