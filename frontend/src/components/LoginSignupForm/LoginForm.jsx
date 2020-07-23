@@ -1,13 +1,36 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 export default function LoginForm({
-  onSubmit,
   email,
   password,
-  onChangeEmail,
-  onChangePassword,
+  setEmail,
+  setPassword,
+  submitHandler,
   onChangeMode,
 }) {
+  const onChangeEmail = useCallback((e) => {
+    setEmail(e.target.value);
+  }, [setEmail]);
+
+  const onChangePassword = useCallback((e) => {
+    setPassword(e.target.value);
+  }, [setPassword]);
+
+  const onSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    try {
+      const res = await submitHandler({
+        email,
+        password,
+      });
+      console.log(res);
+    } catch(err) {
+      const errMessage = (err.response && err.response.data.errors) || err.message;
+    }
+  }, [email, password, submitHandler]);
+
+  const disabled = !email || !password;
+
   return (
     <>
       <div className="form-title">Login</div>
@@ -22,6 +45,7 @@ export default function LoginForm({
             className="imput-field"
             value={email}
             onChange={onChangeEmail}
+            required={true}
           />
         </div>
         <div className="form-row">
@@ -34,9 +58,14 @@ export default function LoginForm({
             className="imput-field"
             value={password}
             onChange={onChangePassword}
+            required={true}
           />
         </div>
+        <div className="form-row form-action">
+          <button type="submit" disabled={disabled}>LOGIN</button>
+        </div>
       </form>
+      <hr />
       <button className="btn" onClick={onChangeMode}>
         Signup
       </button>

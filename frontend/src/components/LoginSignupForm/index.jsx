@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 
-export default function LoginSignupForm({ onSignup, onLogin }) {
+export default function LoginSignupForm({ handleSignup, handleLogin }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,33 +15,18 @@ export default function LoginSignupForm({ onSignup, onLogin }) {
     [],
   );
 
-  const onChangeUserName = useCallback((e) => {
-    // TODO: validate
-    setUsername(e.target.value);
-  }, []);
-
-  const onChangeEmail = useCallback((e) => {
-    // TODO: validate
-    setEmail(e.target.value);
-  }, []);
-
-  const onChangePassword = useCallback((e) => {
-    // TODO: validate
-    setPassword(e.target.value);
-  }, []);
-
   const state = {
     username,
     email,
     password,
-    onChangeUserName,
-    onChangeEmail,
-    onChangePassword,
+    setUsername,
+    setEmail,
+    setPassword,
   };
 
   return mode ? (
-    <SignupForm onSubmit={onSignup} onChangeMode={onChangeMode(false)} {...state} />
+    <SignupForm submitHandler={handleSignup} onChangeMode={onChangeMode(false)} {...state} />
   ) : (
-    <LoginForm onSubmit={onLogin} onChangeMode={onChangeMode(true)} {...state} />
+    <LoginForm submitHandler={handleLogin} onChangeMode={onChangeMode(true)} {...state} />
   );
 }

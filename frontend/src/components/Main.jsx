@@ -7,7 +7,7 @@ export default function Main({ isAuthenticated, handleSignup, handleLogin }) {
       {isAuthenticated ? (
         <>Post Form</>
       ) : (
-        <LoginSignupForm onSignup={handleSignup} onLogin={handleLogin} />
+        <LoginSignupForm handleSignup={handleSignup} handleLogin={handleLogin} />
       )}
     </div>
   );

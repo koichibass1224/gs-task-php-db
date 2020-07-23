@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default function SignupForm({
-  onSubmit,
   username,
   email,
   password,
+  submitHandler,
   onChangeUserName,
   onChangeEmail,
   onChangePassword,
@@ -13,7 +13,7 @@ export default function SignupForm({
   return (
     <>
       <div className="form-title">Signup</div>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={submitHandler}>
         <div className="form-row">
           <label htmlFor="username" className="label">
             UserName
