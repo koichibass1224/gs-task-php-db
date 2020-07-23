@@ -1305,6 +1305,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@kikiki_kiki/class-names@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@kikiki_kiki/class-names/-/class-names-1.0.0.tgz#73045fadd905527b9b31b867f6f72663d30225d5"
+  integrity sha512-ybYV2MqAwDTOFHcLfNlL5d9TVKDZi6MBuwyF8stPXtTTGaxaQeXhx8ty2Brovh5h6WHXmal9UL2i8VyjiDKqjw==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
