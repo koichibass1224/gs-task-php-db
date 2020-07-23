@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import Alert from '../Form/Alert';
 
 export default function LoginForm({
   email,
@@ -8,6 +9,8 @@ export default function LoginForm({
   submitHandler,
   onChangeMode,
 }) {
+  const [error, setError] = useState(false);
+
   const onChangeEmail = useCallback((e) => {
     setEmail(e.target.value);
   }, [setEmail]);
@@ -26,6 +29,7 @@ export default function LoginForm({
       console.log(res);
     } catch(err) {
       const errMessage = (err.response && err.response.data.errors) || err.message;
+      setError(errMessage);
     }
   }, [email, password, submitHandler]);
 
@@ -34,6 +38,7 @@ export default function LoginForm({
   return (
     <>
       <div className="form-title">Login</div>
+      {error && <Alert className="alert-error">{error}</Alert>}
       <form onSubmit={onSubmit}>
         <div className="form-row">
           <label htmlFor="email" className="label">
