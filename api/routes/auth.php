@@ -17,8 +17,7 @@ class Auth
    */
   public static function login()
   {
-    $email = trim(filter_input(INPUT_POST, 'email'));
-    $password = trim(filter_input(INPUT_POST, 'password'));
+    list('email' => $email, 'password' => $password) = self::get_params();
 
     try {
       $userData = DB_Users\get_user_by_email($email);
@@ -59,9 +58,7 @@ class Auth
    */
   public static function signup()
   {
-    $username = trim(filter_input(INPUT_POST, 'username'));
-    $password = trim(filter_input(INPUT_POST, 'password'));
-    $email = trim(filter_input(INPUT_POST, 'email'));
+    list('username' => $username, 'email' => $email, 'password' => $password) = self::get_params();
 
     // Validation
     $errors = self::validate_signup_data($username, $email, $password);
@@ -141,6 +138,14 @@ class Auth
       }
     }
     return $errors;
+  }
+
+  /**
+   * get json post data
+   */
+  private static function get_params() {
+    $json = file_get_contents("php://input");
+    return json_decode($json, true);
   }
 
   // Send validation error.
