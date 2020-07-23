@@ -1,6 +1,8 @@
 import React from 'react';
 import UserProvider from './providers/UserProvider';
 import UserContext from './contexts/user';
+import Header from './components/Header';
+import Main from './components/Main';
 
 export default function App() {
   return (
@@ -8,7 +10,10 @@ export default function App() {
       <UserProvider>
         <UserContext.Consumer>
           {(user) => (
-            <>{console.log(user)}</>
+            <>
+              <Header {...user} />
+              <Main {...user} />
+            </>
           )}
         </UserContext.Consumer>
       </UserProvider>
