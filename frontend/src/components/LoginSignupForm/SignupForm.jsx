@@ -66,13 +66,14 @@ export default function SignupForm({
     [username, email, password, submitHandler, setFormErrors],
   );
 
-  const disabled = !username || !email || !password;
   const formError = 'has-error';
   const {
     username: usernameError,
     email: emailError,
     password: passwordError,
   } = formErrors.current;
+
+  const disabled = !username || !email || !password || usernameError || emailError || passwordError;
 
   return (
     <>
